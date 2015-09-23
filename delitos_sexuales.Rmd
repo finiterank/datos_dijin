@@ -41,28 +41,28 @@ csdf$mes <- factor(csdf$mes, levels=month.name)
 meses <- c('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre')
 levels(csdf$mes) <- meses
 delitos <- c('ARTÍCULO 205. ACCESO CARNAL VIOLENTO', 'ARTÍCULO 206. ACTO SEXUAL VIOLENTO', 'ARTÍCULO 207. ACCESO CARNAL O ACTO SEXUAL EN PERSONA PUESTA EN INCAPACIDAD DE RESISTIR', 'ARTÍCULO 211. ACCESO CARNAL VIOLENTO (CIRCUNSTANCIAS AGRAVACIÓN)', 'RTÍCULO 211. ACTO SEXUAL VIOLENTO (CIRCUNSTANCIAS DE AGRAVACIÓN)', 'ARTÍCULO 211. ACCESO CARNAL O ACTO SEXUAL EN PERSONA PUESTA EN INCAPACIDAD DE RESISTIR  (CIRCUNSTANC')
-df <- delito %in% delitos
-acceso.carnal.por.dia <- csdf %>% filter(df) %>% group_by(dia.mes) %>% summarise(count=n())
+df <- csdf %>% filter(delito %in% delitos)
+acceso.carnal.por.dia <- df %>% group_by(dia.mes) %>% summarise(count=n())
 ```
 
 ```{r}
-total <- nrow(csdf %>% filter(df))
+total <- nrow(df)
 
 total
 
-table(csdf %>% filter(df) %>% select(sexo))
+table(df %>% select(sexo))
         
-diadelasemana <- ggplot(csdf %>% filter(df), aes(día)) + 
+diadelasemana <- ggplot(df, aes(día)) + 
   geom_bar(aes(y = (..count..)/sum(..count..)), fill='grey55') + theme_bw() +
   scale_y_continuous(labels=percent_format()) + xlab('Día de ocurrencia') + 
   ylab('Porcentaje de reportes de violaciones sobre el total (2010-2014)') + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-horadeldia <- ggplot(csdf %>% filter(df), aes(hora.redonda)) + 
+horadeldia <- ggplot(df, aes(hora.redonda)) + 
   geom_bar(aes(y = (..count..)/sum(..count..)), fill='grey55', binwidth=3600) + theme_bw() +
   scale_y_continuous(labels=percent_format()) + xlab('Hora de ocurrencia') + 
   ylab('') + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-mesdelaño <- ggplot(csdf %>% filter(df), aes(mes)) + 
+mesdelaño <- ggplot(df, aes(mes)) + 
   geom_bar(aes(y = (..count..)/sum(..count..)), fill='grey55', binwidth=3600) + theme_bw() +
   scale_y_continuous(labels=percent_format()) + xlab('Mes de ocurrencia') + 
   ylab('') + theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
